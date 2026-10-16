@@ -1,0 +1,2 @@
+# SIFT--Semantic-Intelligence-for-Files-and-Topics
+SIFT (Semantic Intelligence for Files and Topics) is an AI-powered study companion that organizes notes and files by topic, connects related concepts, and makes resources easy to find. With focus timers, personalized study spaces, collaborative learning, and smart revision tools, SIFT helps students spend less time searching and more time learning.
