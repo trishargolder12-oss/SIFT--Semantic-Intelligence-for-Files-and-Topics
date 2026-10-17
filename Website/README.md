@@ -1,5 +1,9 @@
 # SIFT website — Vercel
 
+**Live:** https://sift-v0-beta.vercel.app/ · [Vercel project](https://vercel.com/monolith-vi/sift-v0-beta)
+
+Deployed to the Monolith VI Hobby account through Vercel's source-upload flow. The uploaded archive contains only this website's tracked source; Vercel builds it as Vite. Downloads use the existing GitHub Release installer. Automatic GitHub redeployments are not enabled: the Vercel GitHub app must first be granted access to the SIFT repository, then connected in this project's Git settings. Do not clone a second repository when connecting the existing source.
+
 This folder is a standalone React/TypeScript/Vite project. It builds five pre-rendered pages and static policy/release pages. It does not run the desktop app or Python backend on Vercel.
 
 ```powershell

@@ -1,5 +1,7 @@
 # SIFT V0 Beta
 
+**Website:** [sift-v0-beta.vercel.app](https://sift-v0-beta.vercel.app/) · Deployed on Vercel. Installer downloads are hosted on GitHub Releases. See [deployment details](Website/README.md) for the current update workflow.
+
 **Semantic Intelligence for Files and Topics** — a Windows desktop library for PDFs, Word documents and text notes in folders you approve. SIFT keeps its index on your device and leaves originals in place. Beta version: **0.3.3**.
 
 | Folder | Purpose |

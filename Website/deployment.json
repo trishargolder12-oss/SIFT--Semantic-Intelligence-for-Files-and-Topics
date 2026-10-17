@@ -1,0 +1,12 @@
+{
+  "provider": "Vercel",
+  "team": "monolith-vi",
+  "project": "sift-v0-beta",
+  "productionUrl": "https://sift-v0-beta.vercel.app",
+  "dashboardUrl": "https://vercel.com/monolith-vi/sift-v0-beta",
+  "deploymentId": "dpl_GSbgqKkqcb85WeqC1QGA6sadPKwE",
+  "deploymentUrl": "https://sift-v0-beta-h3vzd1uhu-monolith-vi.vercel.app",
+  "sourceCommit": "510bc9a",
+  "deploymentMethod": "website-source-upload",
+  "automaticGitDeployments": false
+}
