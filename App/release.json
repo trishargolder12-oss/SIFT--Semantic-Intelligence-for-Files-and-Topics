@@ -1,0 +1,15 @@
+{
+  "appId": "org.sift.local-library",
+  "version": "0.3.3",
+  "installer": "0.3.3/SIFT Setup 0.3.3.exe",
+  "sizeBytes": 144500817,
+  "sha256": "6938ceca184997c5d4772531012d5cab09368e4d43ff5c77e77a6ee7b6ca9fc5",
+  "channel": "beta",
+  "platform": "Windows",
+  "architecture": "x64",
+  "signingStatus": "unsigned",
+  "repository": "trishargolder12-oss/SIFT--Semantic-Intelligence-for-Files-and-Topics",
+  "tag": "v0.3.3",
+  "assetName": "SIFT-Setup.exe",
+  "published": false
+}

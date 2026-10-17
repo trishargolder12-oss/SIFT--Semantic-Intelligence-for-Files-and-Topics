@@ -1,0 +1,22 @@
+**/node_modules/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/dist/
+**/dist-electron/
+**/release/
+App/backend/build/
+App/updater/build/
+App/Installer/
+App/Offline Update/
+*.exe
+*.zip
+*.blockmap
+*.pyc
+*.sqlite*
+.env
+.env.*
+!.env.example
+.vercel/
+Website/screenshots/
+**/*.tsbuildinfo

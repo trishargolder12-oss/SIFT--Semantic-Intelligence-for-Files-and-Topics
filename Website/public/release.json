@@ -1,0 +1,28 @@
+{
+  "status": "coming-soon",
+  "version": null,
+  "platform": "Windows",
+  "architecture": "x64",
+  "installerFilename": null,
+  "downloadUrl": null,
+  "sizeBytes": null,
+  "sha256": null,
+  "releaseDate": null,
+  "releaseNotesUrl": "/release-notes.html",
+  "signingStatus": "not-configured",
+  "approved": false,
+  "message": "SIFT V0 Beta 0.3.3 is packaged. The download will be enabled after the GitHub release upload is verified.",
+  "lastReviewed": "2026-10-17",
+  "candidate": {
+    "version": "0.3.3",
+    "platform": "Windows",
+    "architecture": "x64",
+    "installerFilename": "SIFT Setup 0.3.3.exe",
+    "sizeBytes": 144500817,
+    "sha256": "6938ceca184997c5d4772531012d5cab09368e4d43ff5c77e77a6ee7b6ca9fc5",
+    "builtAt": "2026-10-17",
+    "signingStatus": "unsigned",
+    "approved": false,
+    "reason": "Complete local 0.3.3 installer; public availability awaits verified GitHub Release upload."
+  }
+}

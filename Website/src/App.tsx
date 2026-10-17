@@ -1,0 +1,137 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Icon } from './icons';
+import { AmbientEffects, useAmbientPreference } from './AmbientEffects';
+import { LaptopScreen } from './LaptopScreen';
+import { pages, type Page } from './pages';
+import { Editorial, PageBackdrop } from './Editorial';
+import { CoffeePopup } from './CoffeePopup';
+import { HomeReviews } from './HomeReviews';
+import site from '../public/site.json';
+import { canDownload, downloadHref, release } from './release';
+
+const asset = (name: string) => `/assets/${name}`;
+const nav = Object.entries(pages) as [Page, typeof pages[Page]][];
+const features = [
+  { icon: 'folder', color: 'pink', title: 'One local library', short: 'Your files, together', text: 'Bring PDFs, Word documents, and text notes into one searchable view. Your originals stay right where you put them.' },
+  { icon: 'search', color: 'blue', title: 'Full-text search', short: 'Find the words you need', text: 'Search the text inside your documents and their filenames. Exact-term matching helps you get back to the passage you remember.' },
+  { icon: 'shield', color: 'mint', title: 'Private by design', short: 'On your device', text: 'Your library and extracted text stay on your computer. No account or cloud service is needed for the core library.' },
+  { icon: 'refresh', color: 'rose', title: 'Folder monitoring', short: 'Keep your library current', text: 'SIFT watches the folders you approve for changes. You can also rescan, pause, or remove a folder whenever you need.' },
+  { icon: 'file', color: 'lavender', title: 'Originals stay safe', short: 'No moving. No rewriting.', text: 'SIFT reads your documents to build a local index. Removing a folder from your library does not delete its original files.' },
+];
+function Brand({ compact = false }: { compact?: boolean }) {
+  return <a className={`brand ${compact ? 'compact' : ''}`} href="/" aria-label="SIFT home"><img src={asset('sift-book.svg')} width="58" height="58" alt="" /><span><strong>SIFT</strong>{!compact && <small>Semantic Intelligence<br />for Files &amp; Topics</small>}</span></a>;
+}
+function DownloadLink({ children, className = '', icon = 'arrow' }: { children: ReactNode; className?: string; icon?: string }) {
+  return <a className={`button primary ${className}`} href={downloadHref} {...(canDownload ? { download: release.installerFilename || undefined } : {})}>{children}<Icon name={icon} /></a>;
+}
+function SectionTitle({ eyebrow, children, description }: { eyebrow: string; children: ReactNode; description: string }) {
+  return <div className="section-title reveal"><p className="eyebrow"><span>✦</span> {eyebrow} <span>✦</span></p><h2>{children}</h2><p>{description}</p></div>;
+}
+function Header({ page }: { page: Page }) {
+  const [open, setOpen] = useState(false);
+  const menu = useRef<HTMLButtonElement>(null);
+  const links = useRef<HTMLElement>(null);
+  useEffect(() => { if (open) links.current?.querySelector<HTMLAnchorElement>('a')?.focus(); }, [open]);
+  return <header className="header" onKeyDown={e => { if (e.key === 'Escape' && open) { setOpen(false); menu.current?.focus(); } }}><Brand /><nav ref={links} className={open ? 'navigation is-open' : 'navigation'} aria-label="Main navigation" id="main-navigation">{nav.map(([key, route]) => <a key={key} href={route.href} aria-current={key === page ? 'page' : undefined} onClick={() => setOpen(false)}>{route.label}</a>)}</nav><div className="header-actions"><a className="button secondary release-link" href={release.releaseNotesUrl}>Release notes</a><DownloadLink>Download SIFT</DownloadLink></div><button className="menu-toggle" ref={menu} type="button" aria-expanded={open} aria-controls="main-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen(!open)}><Icon name={open ? 'close' : 'menu'} /></button></header>;
+}
+
+function Dialog({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const returnFocus = useRef(typeof document === 'undefined' ? null : document.activeElement as HTMLElement);
+  useEffect(() => { const el = ref.current!; el.showModal(); return () => { el.close(); returnFocus.current?.focus({ preventScroll: true }); }; }, []);
+  return <dialog ref={ref} className="content-dialog" aria-labelledby="dialog-title" onKeyDown={e => {
+    if (e.key !== 'Tab') return;
+    const controls = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('a[href],button:not(:disabled),input,summary,[tabindex="0"]')).filter(el => el.getClientRects().length);
+    const first = controls[0], last = controls[controls.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+  }} onCancel={e => { e.preventDefault(); onClose(); }} onClick={e => { if (e.target === e.currentTarget) { const b = e.currentTarget.getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) onClose(); } }}><div className="dialog-header"><h2 id="dialog-title">{title}</h2><button type="button" className="icon-button" onClick={onClose} aria-label="Close dialog" autoFocus><Icon name="close" /></button></div><div className="dialog-body">{children}</div></dialog>;
+}
+
+const faqs = [
+  ['What can SIFT do today?', 'The current core library indexes PDF, DOCX, and TXT files from folders you approve. It offers exact-term search across filenames and extracted text, folder monitoring, scan controls, and document details. The Windows beta includes the desktop app and local service in one installer. See the release status below for availability.'],
+  ['Does SIFT have semantic or conversational search?', 'The beta includes conversational discovery and editable virtual sections. Optional local models add meaning-based retrieval and query interpretation after explicit setup; keyword discovery works without those models.'],
+  ['Will my documents leave my computer?', 'The core desktop library processes documents locally and stores its index on your device. It needs no cloud account. This website’s screenshot preview does not select, read, or upload your files.'],
+  ['Does it move or change my files?', 'No. SIFT reads supported documents to create a separate local index. It does not reorganize folders or edit originals. Removing an approved folder from SIFT does not delete the source documents.'],
+  ['Can I search scanned PDFs?', 'Native PDF text is searchable immediately. Image-only scans need the separate optional OCR pack. OCR and local model downloads require explicit setup and are not included in the main installer.'],
+  ['When can I download SIFT?', 'Check the release status above. When available, Download for Windows retrieves one complete installer from GitHub Releases. Windows x64 is supported; macOS and Linux packages are not available.'],
+];
+
+
+function PreviewPage({ onScreenshot }: { onScreenshot: (name: string) => void }) {
+ const [view, setView] = useState<'library' | 'discovery'>('library');
+ const file = view === 'library' ? 'library-preview.png' : 'discovery-preview.png';
+ return <><PageIntro page="preview" /><section className="section actual-preview" aria-label="Application screenshots"><h2 className="sr-only">Preview the actual desktop app</h2><div className="preview-tabs" aria-label="Choose an app view"><button type="button" aria-pressed={view === 'library'} onClick={() => setView('library')}>Library</button><button type="button" aria-pressed={view === 'discovery'} onClick={() => setView('discovery')}>Find with SIFT <span>BETA</span></button></div><div className="actual-preview-frame reveal"><img key={file} src={asset(file)} decoding="async" width="1200" height="820" alt={view === 'library' ? 'Actual SIFT library: study-room background, approved folders, search, scan status and documents.' : 'Actual Find with SIFT development interface: approved-folder scope, virtual-library sections and a discovery prompt.'} /><button type="button" className="preview-expand" aria-label="Expand app screenshot" onClick={() => onScreenshot(file)}><Icon name="expand" /></button></div><div className="actual-preview-caption"><p>{view === 'library' ? 'Current desktop library · synthetic sample documents' : 'Beta discovery interface · synthetic sample documents · local models are optional'}</p><a className="text-link" href="/download.html">Windows release status <Icon name="arrow" /></a></div></section><Editorial page="preview" /></>;
+}
+function PageIntro({ page }: { page: Exclude<Page, 'home'> }) {
+  const info = pages[page];
+  return <div className="page-intro section"><p className="eyebrow"><span>✦</span> {info.eyebrow}</p><h1 id="page-title" tabIndex={-1}>{info.heading}<br /><span className="gradient-text">{info.emphasis}</span></h1><p>{info.description}</p></div>;
+}
+function HomePage() { return <div className="opening" id="home"><div className="room-art" /><div className="room-shade" /><LaptopScreen /><div className="star star-one" aria-hidden="true">✦</div><div className="star star-two" aria-hidden="true">✧</div><div className="lamp-ambience" aria-hidden="true" /><div className="header-spacer" /><section className="hero" aria-labelledby="hero-title"><div className="hero-copy"><h1 id="hero-title" tabIndex={-1}>Stop Searching.<br /><span className="gradient-text">Start Studying.</span></h1><p className="hero-description">Your PDFs, notes, and documents.<br />Together in a calmer, private library.<br />Find your focus. Keep your flow.</p><div className="hero-actions"><DownloadLink icon="down">Download for Windows</DownloadLink><a className="button secondary" href="/preview.html"><Icon name="play" />Explore Demo</a></div><p className="hero-availability">{canDownload ? `Version ${release.version} · Windows x64` : 'Windows x64 · Public download coming soon'}</p><div className="hero-facts"><span><Icon name="shield" />Local processing</span><i /><span><Icon name="file" />PDF · DOCX · TXT</span></div></div></section><div className="feature-strip" aria-label="Core library capabilities">{features.map(feature => <a href="/features.html" key={feature.title} className={`strip-item ${feature.color}`}><Icon name={feature.icon} /><span><strong>{feature.title}</strong><small>{feature.short}</small></span></a>)}</div><div className="opening-intro" id="features"><SectionTitle eyebrow="EVERYTHING YOU NEED" description="Your files, notes, and documents, together on this device — with a little more space to think.">A Smarter Way to <span className="gradient-text">Study</span></SectionTitle><div className="home-links"><a className="text-link" href="/features.html">Explore features <Icon name="arrow" /></a><a className="text-link" href="/how-it-works.html">How it works <Icon name="arrow" /></a></div></div></div>; }
+function FeaturesPage() { return <><PageIntro page="features" /><section className="section features-section" aria-label="Library features"><h2 className="sr-only">Core library features</h2><div className="features-grid">{features.map((f, i) => <article key={f.title} className={`feature-card reveal ${f.color}`} style={{ '--delay': `${i * 75}ms` } as React.CSSProperties}><span className="feature-icon"><Icon name={f.icon} /></span><span className="feature-number">0{i + 1}</span><h3>{f.title}</h3><p>{f.text}</p></article>)}</div><div className="features-footnote reveal"><Icon name="spark" /><p>A little more intelligence, on your device.<br className="mobile-break" /> <span>Optional local models &amp; editable grouping</span> <span className="upcoming">BETA</span></p></div></section> <section className="section privacy-section" id="privacy"><div className="privacy-art reveal" aria-hidden="true"><div className="privacy-orbit orbit-one" /><div className="privacy-orbit orbit-two" /><div className="privacy-core"><Icon name="shield" /></div><span className="orbit-file f-one"><Icon name="file" /><small>PDF</small></span><span className="orbit-file f-two"><Icon name="folder" /></span><span className="orbit-file f-three"><Icon name="file" /><small>TXT</small></span><span className="local-label"><i /> RIGHT HERE. ON YOUR DEVICE.</span></div><div className="privacy-copy reveal"><p className="eyebrow"><span>✦</span> YOUR FILES. YOUR SPACE.</p><h2>A personal library.<br /><span className="gradient-text">That stays personal.</span></h2><p>Your study materials don’t need a journey to the cloud. The core SIFT library processes your documents and stores its index locally.</p><ul className="privacy-list"><li><Icon name="check" />Only the folders you approve</li><li><Icon name="check" />No account needed for the core library</li><li><Icon name="check" />Original files stay untouched</li></ul><a className="text-link" href="/download.html#faq">A few things worth knowing <Icon name="arrow" /></a></div></section><Editorial page="features" /></>; }
+function HowPage() { return <><PageIntro page="how-it-works" /><section className="section how-section" id="how-it-works"><h2 className="sr-only">Set up SIFT in three steps</h2><div className="steps">{[{ icon: 'down', title: 'Install SIFT', text: 'Use the Windows installer linked on the download page when the beta is available. The packaged app runs without a separate Python or Node.js setup.' }, { icon: 'folder', title: 'Choose your folders', text: 'Select the folders you want in your library. SIFT indexes supported documents there and leaves the originals in place.' }, { icon: 'search', title: 'Find your documents', text: 'Search a filename or the words inside a document. Browse the result, read the extracted text, and get back to studying.' }].map((s, i) => <article className="step reveal" key={s.title} style={{ '--delay': `${i * 75}ms` } as React.CSSProperties}><div className="step-top"><span className="step-number">0{i + 1}</span><Icon name={s.icon} /></div><h3>{s.title}</h3><p>{s.text}</p></article>)}</div></section><section className="section permission-note"><Icon name="shield" /><div><h2>Always your choice.</h2><p>Approve the folders you want to include. Pause scanning whenever you need to, or remove a folder from SIFT without deleting its files.</p><a className="text-link" href="/download.html">Check download availability <Icon name="arrow" /></a></div></section><Editorial page="how-it-works" /></>; }
+function DownloadPage() {
+ const [checksumCopied, setChecksumCopied] = useState(false);
+ return <><PageIntro page="download" /><section className="section download-section" id="download"><div className="download-card reveal"><div className="download-glow" /><img className="download-book" src={asset('sift-book.svg')} width="76" height="76" alt="" /><p className="eyebrow">A QUIETER PLACE TO BEGIN</p><h2>Your next study session,<br /><span className="gradient-text">a little more organized.</span></h2><p>Your documents, close at hand. Your focus, back where it belongs.</p><div className="download-platform"><Icon name="windows" /><div><strong>SIFT for {release.platform}</strong><span>{release.architecture === 'x64' ? '64-bit desktop application' : release.architecture}</span></div><span className={`release-status ${canDownload ? 'ready' : ''}`}><i />{canDownload ? `v${release.version}` : 'IN PREPARATION'}</span></div>{canDownload ? <><DownloadLink className="download-main" icon="down">Download for Windows</DownloadLink><p className="download-size">{(Number(release.sizeBytes) / 1000000).toFixed(1)} MB · Released {release.releaseDate} · {release.signingStatus}</p><div className="checksum"><code>{release.sha256}</code><button type="button" onClick={async () => { try { await navigator.clipboard.writeText(String(release.sha256)); setChecksumCopied(true); } catch { setChecksumCopied(false); } }}>{checksumCopied ? 'Copied' : 'Copy SHA-256'}</button></div></> : <><button className="button primary download-main" type="button" disabled><Icon name="down" />Download coming soon</button><p className="release-message">{release.message}</p></>}<a className="text-link" href={release.releaseNotesUrl}>Release notes &amp; build status <Icon name="arrow" /></a><div className="download-footer"><span><Icon name="shield" />Local processing</span><span><Icon name="file" />PDF · DOCX · TXT</span><span><Icon name="moon" />Made for focus</span></div></div></section> <section className="section faq-section" id="faq"><div className="faq-heading reveal"><p className="eyebrow"><span>✦</span> A FEW GOOD QUESTIONS</p><h2>A little more<br />{' '}<span className="gradient-text">clarity.</span></h2><p>The practical details, before you settle in.</p></div><div className="faq-list reveal">{faqs.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section><Editorial page="download" /></>;
+}
+function EffectsControl({ enabled, reduced, toggle }: ReturnType<typeof useAmbientPreference>) {
+ return <button type="button" className="ambient-toggle" aria-label="Ambient effects" aria-pressed={enabled && !reduced} disabled={reduced} onClick={toggle} title={reduced ? 'Your reduced-motion preference is enabled' : 'Toggle drifting leaves, rain and wind'}><Icon name="leaf" /><span>{reduced ? 'Reduced motion' : `Effects ${enabled ? 'on' : 'off'}`}</span><i aria-hidden="true" /></button>;
+}
+function Footer({ onModal, ambient, onCoffee }: { onCoffee: () => void; onModal: (name: 'privacy' | 'terms' | 'licenses') => void; ambient: ReturnType<typeof useAmbientPreference> }) { return <footer className="footer"><div className="footer-main"><div><Brand /><p>A little clarity, after dark.</p></div><div className="footer-links"><a href="/features.html">Features</a><a href="/preview.html">Explore demo</a><a href="/download.html">Download</a><a href={release.releaseNotesUrl}>Release notes</a></div><div className="footer-message"><Icon name="moon" /><span>For the late-night thinkers.<br />And the early-morning doers.</span></div></div><div className="footer-bottom"><span>© 2026 SIFT. All rights reserved.</span><div><a href="/privacy.html" onClick={e => { e.preventDefault(); onModal('privacy'); }}>Privacy</a><a href="/terms.html" onClick={e => { e.preventDefault(); onModal('terms'); }}>Terms</a><a href="/licenses.html" onClick={e => { e.preventDefault(); onModal('licenses'); }}>Asset licenses</a></div><div className="footer-community"><button className="coffee-trigger" type="button" onClick={onCoffee}><Icon name="coffee" />Grab us a coffee</button><a className="creator-link" href={site.creatorUrl} target="_blank" rel="noopener noreferrer"><Icon name="instagram" /><span>Find the creator <strong>@tris_haar</strong></span><Icon name="arrow" /></a></div></div><div className="footer-effects"><EffectsControl {...ambient} /></div></footer>; }
+
+export function App({ page = browserPage() }: { page?: Page }) {
+ const [modal, setModal] = useState<'screenshot' | 'privacy' | 'terms' | 'licenses' | null>(null);
+ const [activeScreen, setActiveScreen] = useState('library-preview.png');
+ const ambient = useAmbientPreference();
+ const [coffeeRequest, setCoffeeRequest] = useState(0);
+  const [backVisible, setBackVisible] = useState(false);
+  const animation = useRef(0);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const apply = () => setReduced(media.matches); apply(); media.addEventListener('change', apply);
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } }), { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // Observe before hiding: if the API fails or JavaScript is unavailable, content stays visible.
+    document.documentElement.classList.add('motion-ready');
+    let frame = 0;
+    const update = () => { frame = 0; setBackVisible(window.scrollY > 650); if (!media.matches && !document.hidden) document.documentElement.style.setProperty('--depth', `${Math.min(window.scrollY * 0.035, 24)}px`); };
+    const onScroll = () => { if (!frame && !document.hidden) frame = requestAnimationFrame(update); };
+    const onVisibility = () => { document.documentElement.dataset.hidden = String(document.hidden); if (document.hidden) { cancelAnimationFrame(frame); frame = 0; cancelAnimationFrame(animation.current); } else update(); };
+    window.addEventListener('scroll', onScroll, { passive: true }); document.addEventListener('visibilitychange', onVisibility); update();
+    const interrupt = () => cancelAnimationFrame(animation.current);
+    const interruptKey = (event: KeyboardEvent) => { if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) interrupt(); };
+    window.addEventListener('wheel', interrupt, { passive: true }); window.addEventListener('touchstart', interrupt, { passive: true }); window.addEventListener('pointerdown', interrupt); window.addEventListener('keydown', interruptKey);
+    return () => { observer.disconnect(); media.removeEventListener('change', apply); cancelAnimationFrame(frame); cancelAnimationFrame(animation.current); window.removeEventListener('scroll', onScroll); document.removeEventListener('visibilitychange', onVisibility); window.removeEventListener('wheel', interrupt); window.removeEventListener('touchstart', interrupt); window.removeEventListener('pointerdown', interrupt); window.removeEventListener('keydown', interruptKey); document.documentElement.classList.remove('motion-ready'); };
+  }, []);
+
+  function toTop() {
+    cancelAnimationFrame(animation.current);
+    if (reduced) { window.scrollTo({ top: 0, behavior: 'instant' }); document.querySelector('h1')?.focus({ preventScroll: true }); return; }
+    const start = window.scrollY, began = performance.now(), duration = Math.min(900, Math.max(450, start * 0.2));
+    function step(now: number) { const progress = Math.min(1, (now - began) / duration); window.scrollTo({ top: start * (1 - (1 - Math.pow(1 - progress, 3))), behavior: 'instant' }); if (progress < 1) animation.current = requestAnimationFrame(step); else document.querySelector('h1')?.focus({ preventScroll: true }); }
+    animation.current = requestAnimationFrame(step);
+  }
+
+
+ return <div className={`site-shell ${page === 'home' ? 'home-page' : 'inner-page'}`}>
+  <a className="skip-link" href="#main">Skip to content</a>
+  <AmbientEffects enabled={ambient.enabled && !ambient.reduced} />
+  <PageBackdrop page={page} />
+  <Header page={page} />
+  <main id="main">{page === 'home' ? <HomePage /> : page === 'features' ? <FeaturesPage /> : page === 'how-it-works' ? <HowPage /> : page === 'preview' ? <PreviewPage onScreenshot={name => { setActiveScreen(name); setModal('screenshot'); }} /> : <DownloadPage />}{page === 'home' && <HomeReviews />}</main>
+  <Footer onModal={setModal} ambient={ambient} onCoffee={() => setCoffeeRequest(current => current + 1)} />
+  <CoffeePopup page={page} request={coffeeRequest} onClose={() => setCoffeeRequest(0)} />
+  {backVisible && <button className="back-to-top" type="button" aria-label="Back to top" onClick={toTop}><Icon name="up" /></button>}
+  {modal === 'screenshot' && <Dialog title="Inside the current desktop app" onClose={() => setModal(null)}><img className="app-screenshot" src={asset(activeScreen)} width="1200" height="820" alt="Actual SIFT desktop application interface, shown with synthetic test documents." /><p className="dialog-note">Current application capture · synthetic test data. Development screenshots do not certify features in a public installer.</p></Dialog>}
+    {modal === 'privacy' && <Dialog title="Privacy & local processing" onClose={() => setModal(null)}><p>This website serves local fonts and artwork. It has no analytics, advertising trackers, sign-in, file uploads, or contact form. The app preview displays screenshots with synthetic sample documents; it does not read your files. Your browser stores the effects preference and a session-only flag so the coffee invitation appears automatically only once per visit.</p><p>The core desktop library reads supported documents only in folders you approve and keeps its extracted text and index on your device. Removing a folder from the library does not delete its originals; cached records can remain marked excluded.</p><p>The website is prepared for hosting on Vercel; installer downloads are served by GitHub Releases. These providers may process connection information such as IP addresses and access logs under their own privacy policies. Optional local model or OCR setup connects to the respective download hosts only after you choose to download those components. See <a href="https://vercel.com/legal/privacy-policy">Vercel privacy</a> and <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy</a>.</p></Dialog>}
+    {modal === 'terms' && <Dialog title="Website & preview terms" onClose={() => setModal(null)}><p>This website introduces SIFT V0 Beta and provides an illustrative sample preview. Preview content is example data, not your documents. Current development features and internal builds are not a promise of public release functionality or timing.</p><p>No purchase, subscription, or account is offered here. Public installer availability and included features are determined by the release metadata and release notes. SIFT is a beta; the release notes describe included features and verification limits.</p><p>The source is available for inspection in the project repository. No open-source license is granted by making the repository public. Third-party font and asset notices remain available on the licenses page. Contact the creator using the profile linked in the site footer.</p></Dialog>}
+    {modal === 'licenses' && <Dialog title="Fonts & artwork" onClose={() => setModal(null)}><p>Sora and Manrope are bundled locally under the SIL Open Font License 1.1.</p><ul><li><a href="/licenses/sora-OFL.txt">Sora font license</a></li><li><a href="/licenses/manrope-OFL.txt">Manrope font license</a></li></ul><p>The SIFT book SVG is reused from the project’s approved identity. Room artwork was generated for this website from the supplied visual reference. The app screenshot is from the project’s production renderer with synthetic fixture data.</p><p>Project identity, supplied-reference rights, and final software distribution terms should be confirmed by the publisher before public launch.</p></Dialog>}
+
+ </div>;
+}
+function browserPage(): Page {
+ if (typeof window === 'undefined') return 'home';
+ return (Object.keys(pages) as Page[]).find(key => pages[key].href === window.location.pathname) || 'home';
+}
