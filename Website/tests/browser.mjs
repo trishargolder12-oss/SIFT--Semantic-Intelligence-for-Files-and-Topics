@@ -62,7 +62,7 @@ try {
  await page.getByRole('link',{name:'Explore Demo',exact:true}).click();await page.waitForLoadState('networkidle');
  check('Explore Demo opens actual app gallery',new URL(page.url()).pathname==='/preview.html'&&await page.locator('.actual-preview-frame>img').getAttribute('src')==='/assets/library-preview.png');
  await page.getByRole('button',{name:/Find with SIFT/}).click();await page.waitForFunction(()=>document.querySelector('.actual-preview-frame>img')?.complete);
- check('Development gallery shows real discovery capture and disclosure',await page.locator('.actual-preview-frame>img').getAttribute('src')==='/assets/discovery-preview.png'&&(await page.locator('.actual-preview-caption').innerText()).includes('Beta'));
+ check('Beta gallery shows real discovery capture and disclosure',await page.locator('.actual-preview-frame>img').getAttribute('src')==='/assets/discovery-preview.png'&&(await page.locator('.actual-preview-caption').innerText()).includes('Beta'));
  await page.getByRole('button',{name:'Expand app screenshot'}).click();await page.keyboard.press('Tab');
  check('Screenshot dialog contains keyboard focus',await page.getByRole('dialog').isVisible()&&await page.evaluate(()=>!!document.activeElement.closest('dialog')));
  await page.keyboard.press('Escape');check('Escape restores screenshot button focus',await page.getByRole('dialog').count()===0&&await page.evaluate(()=>document.activeElement.getAttribute('aria-label')==='Expand app screenshot'));

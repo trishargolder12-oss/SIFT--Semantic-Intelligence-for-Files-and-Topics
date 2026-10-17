@@ -11,5 +11,7 @@
   "repository": "trishargolder12-oss/SIFT--Semantic-Intelligence-for-Files-and-Topics",
   "tag": "v0.3.3",
   "assetName": "SIFT-Setup.exe",
-  "published": false
+  "published": true,
+  "downloadUrl": "https://github.com/trishargolder12-oss/SIFT--Semantic-Intelligence-for-Files-and-Topics/releases/download/v0.3.3/SIFT-Setup.exe",
+  "releaseDate": "2026-10-17"
 }
