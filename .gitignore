@@ -19,4 +19,5 @@ App/Offline Update/
 !.env.example
 .vercel/
 Website/screenshots/
+App/docs/design/previews/
 **/*.tsbuildinfo
