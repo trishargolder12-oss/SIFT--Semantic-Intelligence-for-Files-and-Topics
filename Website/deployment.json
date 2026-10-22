@@ -4,9 +4,14 @@
   "project": "sift-v0-beta",
   "productionUrl": "https://sift-v0-beta.vercel.app",
   "dashboardUrl": "https://vercel.com/monolith-vi/sift-v0-beta",
-  "deploymentId": "dpl_GSbgqKkqcb85WeqC1QGA6sadPKwE",
-  "deploymentUrl": "https://sift-v0-beta-h3vzd1uhu-monolith-vi.vercel.app",
-  "sourceCommit": "510bc9a",
-  "deploymentMethod": "website-source-upload",
-  "automaticGitDeployments": false
+  "deploymentUrl": "https://sift-v0-beta-lknund7vo-monolith-vi.vercel.app",
+  "sourceCommit": "2449a1f5eebdd955c1cb2556b991ae73d04e79c8",
+  "deploymentMethod": "github",
+  "automaticGitDeployments": true,
+  "projectId": "prj_YPXumeqtxGy2FfeXpEz3Fca2foDm",
+  "deploymentDashboardUrl": "https://vercel.com/monolith-vi/sift-v0-beta/Fz5apT4j3RUGFQiQcKr7kb7YjQHt",
+  "deploymentReference": "Fz5apT4j3RUGFQiQcKr7kb7YjQHt",
+  "rootDirectory": "Website",
+  "productionBranch": "main",
+  "originalUploadDeploymentId": "dpl_GSbgqKkqcb85WeqC1QGA6sadPKwE"
 }
