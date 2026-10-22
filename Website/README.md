@@ -2,7 +2,7 @@
 
 **Live:** https://sift-v0-beta.vercel.app/ · [Vercel project](https://vercel.com/monolith-vi/sift-v0-beta)
 
-Deployed to the Monolith VI Hobby account through Vercel's source-upload flow. The uploaded archive contains only this website's tracked source; Vercel builds it as Vite. Downloads use the existing GitHub Release installer. Automatic GitHub redeployments are not enabled: the Vercel GitHub app must first be granted access to the SIFT repository, then connected in this project's Git settings. Do not clone a second repository when connecting the existing source.
+The existing Monolith VI Vercel project is connected to the SIFT GitHub repository. Its Root Directory is Website and its framework is Vite. Pushes to main trigger website builds and production updates. Downloads continue to use the verified GitHub Release installer. The original launch used source upload; the current update workflow uses Git.
 
 This folder is a standalone React/TypeScript/Vite project. It builds five pre-rendered pages and static policy/release pages. It does not run the desktop app or Python backend on Vercel.
 
@@ -19,3 +19,5 @@ The build uses `SITE_URL` if supplied, then `site.json`, then Vercel's productio
 `public/release.json` is the single source for download buttons, checksum, release notes and version. The release publisher verifies the hosted installer before enabling the download. GitHub hosts the installer; Vercel serves only this site's static assets. Never copy `.exe` or update ZIP files into `public/`.
 
 `npm test` exercises the production pages in installed Microsoft Edge (or set `SIFT_BROWSER_CHANNEL=chrome`). This test saves a timestamped report under the repository's `test_logs/` and screenshots under `Website/screenshots/`.
+
+The site distinguishes public installer 0.3.3 from local-only build 0.4.3. Screenshot provenance is recorded in public/assets/app-capture.json. To regenerate captures from a separate local app source tree, set SIFT_DESKTOP_SOURCE before running scripts/capture-app.mjs. Never advertise a newer installer until its hosted bytes are verified.

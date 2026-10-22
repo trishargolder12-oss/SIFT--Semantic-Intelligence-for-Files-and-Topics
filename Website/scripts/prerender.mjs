@@ -23,10 +23,14 @@ try {
   // All displayed installer facts are derived from the one maintained manifest.
   const release = JSON.parse(await readFile('public/release.json', 'utf8'));
   const escape = value => String(value ?? 'Not configured').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
-  const candidate = release.status === 'published' ? release : release.candidate;
-  const fields = [['Version', candidate.version], ['Platform', `${candidate.platform} ${candidate.architecture}`], ['Filename', candidate.installerFilename], [release.status === 'published' ? 'Release date' : 'Build date', candidate.builtAt || candidate.releaseDate], ['Size', `${candidate.sizeBytes.toLocaleString('en-US')} bytes`], ['Signing', candidate.signingStatus], ['SHA-256', candidate.sha256]];
+  const candidate = release.candidate;
+  const artifact = (item, local = false) => {
+    const fields = [['Version', item.version], ['Platform', `${item.platform} ${item.architecture}`], ['Filename', item.installerFilename], [local ? 'Built locally' : 'Published', local ? item.builtAt : item.releaseDate], ['Size', `${Number(item.sizeBytes).toLocaleString('en-US')} bytes`], ['Signing', item.signingStatus], ['SHA-256', item.sha256]];
+    return fields.map(([key, value]) => `<dt>${escape(key)}</dt><dd>${key === 'SHA-256' ? `<code>${escape(value)}</code>` : escape(value)}</dd>`).join('');
+  };
   let notes = await readFile('public/release-notes.html', 'utf8');
-  notes = notes.replace(/<dl>.*?<\/dl>/s, `<dl>${fields.map(([key, value]) => `<dt>${escape(key)}</dt><dd>${key === 'SHA-256' ? `<code>${escape(value)}</code>` : escape(value)}</dd>`).join('')}</dl>`);
+  notes = notes.replace(/<dl id="public-artifact">.*?<\/dl>/s, `<dl id="public-artifact">${artifact(release)}</dl>`);
+  notes = notes.replace(/<dl id="local-artifact">.*?<\/dl>/s, `<dl id="local-artifact">${artifact(candidate, true)}</dl>`);
   const releaseSummary = release.status === 'published' ? `Public Windows release: ${escape(release.version)}.` : 'Public Windows download: coming soon.';
   const releaseBody = release.status === 'published' ? `Version ${escape(release.version)} · ${escape(release.sizeBytes)} bytes · Released ${escape(release.releaseDate)} · ${escape(release.signingStatus)}. See the download section for the installer and checksum.` : `${escape(release.message)} No release date has been announced.`;
   notes = notes.replace(/<div class="status">.*?<\/div>/s, `<div class="status"><strong>${releaseSummary}</strong><p>${releaseBody}</p></div>`);

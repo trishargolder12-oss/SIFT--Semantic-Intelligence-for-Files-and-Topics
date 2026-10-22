@@ -8,7 +8,7 @@ const writing = {
     lead: 'Study materials tend to grow in every direction: a lecture PDF here, a Word document there, a text note saved in a hurry. SIFT gives those scattered materials a shared place to be found, while your folders remain your own.',
     sections: [
       ['A library is a map', 'SIFT builds a separate local index of supported documents. Think of it as a map of the words in your files, rather than a new set of folders you have to maintain. You can search across the library without first remembering which subject folder holds a passage.'],
-      ['Useful search starts with a clue', 'A distinctive word, a phrase from a lecture, or part of a filename gives exact-term search somewhere to begin. The current core library searches extracted text; image-only scans may have no searchable words. Optional local models add meaning-based retrieval after explicit setup.'],
+      ['Useful search starts with a clue', 'A distinctive word, a phrase from a lecture, or part of a filename gives exact-term search somewhere to begin. The current core library searches extracted text; image-only scans may have no searchable words. Find with SIFT adds conversational discovery and editable virtual sections. Optional local models add meaning retrieval; a separate OCR pack can make scanned pages searchable.'],
       ['Control belongs with you', 'Only approved folders belong in the library. Monitoring helps keep the index current, and scan controls let you pause or rescan when needed. Your original documents stay in place. The aim is a quieter workflow, with fewer decisions between a question and your notes.'],
     ], quote: 'A place to find your work. Space to think about it.', link: '/how-it-works.html', linkText: 'See how the library works',
   },
@@ -19,7 +19,7 @@ const writing = {
     sections: [
       ['1. A boundary you choose', 'The folder picker defines the scope of your library. SIFT works within approved folders, so the starting point is deliberate. A course folder or a collection of revision notes is a useful first step.'],
       ['2. A separate local index', 'SIFT extracts readable text and file metadata into its own local library. PDF, DOCX, and TXT are supported by the core indexer. The index is separate from the originals; SIFT does not rename, move, or rewrite your study documents.'],
-      ['3. Search, then return to the source', 'Search a filename or an exact term from the text. Document details provide extracted passages and context, while the desktop app can return you to the original file. When a folder changes, monitoring and rescans help bring the library up to date.'],
+      ['3. Search, then return to the source', 'Search a filename or a phrase, or ask Find with SIFT for a document. Source excerpts explain matches. Syllabus collections and virtual sections help organize the library while leaving originals in place. Monitoring and rescans keep approved folders current.'],
     ], quote: 'Start with one folder. Follow one useful clue.', link: '/preview.html', linkText: 'Look inside the app',
   },
   preview: {
@@ -29,7 +29,7 @@ const writing = {
     sections: [
       ['Your folders, in context', 'The library view keeps approved folders beside the document list. Scan status, supported file types, and document states help explain what is in the index and what may need attention.'],
       ['A visible path back to your notes', 'Search sits close to the library, so looking for a word and reviewing a document feel like parts of the same task. The room artwork provides atmosphere; stable navy reading surfaces keep the practical information clear.'],
-      ['A closer look at the beta', 'The beta includes Find with SIFT and virtual sections. The gallery uses synthetic sample documents. Optional local models and OCR require separate setup; release notes describe the packaged build and its tested limits.'],
+      ['Know which build you are viewing', 'These captures show the local 0.4.3 renderer with synthetic documents. Public beta 0.3.3 already includes discovery and syllabus collections. The newer 0.4.3 explanation opt-in, progress, and model-loading changes belong to the local build; the download page labels each version separately.'],
     ], quote: 'Atmosphere around the work. Clarity where you read.', link: '/features.html', linkText: 'Explore the core features',
   },
   download: {
@@ -37,8 +37,8 @@ const writing = {
     heading: 'Know the build.', emphasis: 'Keep your bearings.',
     lead: 'A download should tell you what you are getting. SIFT keeps release details together so the installer, version, and published information can be checked as one coherent release.',
     sections: [
-      ['A complete Windows package', 'The intended Windows x64 installer includes the desktop application and its local service. The packaged app is designed to run without separately installing Python or Node.js. Public availability is shown above; an internal development build is not automatically a public release.'],
-      ['Details you can verify', 'When a public release is configured, the download information includes its version, installer size, release date, signing status, and SHA-256 checksum. A checksum helps confirm that a downloaded file matches the published artifact.'],
+      ['A complete Windows package', 'The public Windows x64 beta installer includes the desktop application and its local service. The packaged app is designed to run without separately installing Python or Node.js. The current public installer is 0.3.3. The complete local 0.4.3 build is listed separately and has not been uploaded.'],
+      ['Details you can verify', 'The public download information includes its version, installer size, release date, signing status, and SHA-256 checksum. A checksum helps confirm that a downloaded file matches the published artifact.'],
       ['Your library comes next', 'After installation, choose the folders you want to include. SIFT builds a local index while keeping the originals in place. Start small, try a familiar filename or phrase, and expand your library when the workflow feels comfortable.'],
     ], quote: 'A clear release. A considered beginning.', link: '/how-it-works.html', linkText: 'Read the setup guide',
   },

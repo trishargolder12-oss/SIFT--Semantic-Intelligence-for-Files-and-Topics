@@ -15,7 +15,7 @@ export function seoHead({ page, info, site, origin }) {
     { '@type': 'WebSite', name: 'SIFT', description: 'A local Windows document library for study materials.', inLanguage: 'en', creator, ...(origin ? { '@id': `${origin}/#website`, url: `${origin}/` } : {}) },
     { '@type': 'WebPage', name: info.title, description: info.description, inLanguage: 'en', ...(url ? { '@id': `${url}#page`, url, isPartOf: { '@id': `${origin}/#website` } } : {}) },
   ];
-  if (page === 'home') graph.push({ '@type': 'SoftwareApplication', name: 'SIFT', applicationCategory: 'EducationalApplication', operatingSystem: 'Windows', description: 'A local library that indexes PDF, DOCX and TXT files from user-approved folders and offers exact-term search.', creator, ...(origin ? { url: `${origin}/` } : {}) });
+  if (page === 'home') graph.push({ '@type': 'SoftwareApplication', name: 'SIFT', applicationCategory: 'EducationalApplication', operatingSystem: 'Windows', description: 'A local library that indexes PDF, DOCX and TXT files from user-approved folders and offers full-text search, conversational discovery and syllabus collections. Optional models and OCR need separate setup.', creator, ...(origin ? { url: `${origin}/` } : {}) });
   if (page !== 'home' && origin) graph.push({ '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: `${origin}/` }, { '@type': 'ListItem', position: 2, name: info.label, item: url }] });
   const tags = [
     '<meta name="robots" content="index, follow, max-image-preview:large">',

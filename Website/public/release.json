@@ -11,18 +11,18 @@
   "releaseNotesUrl": "/release-notes.html",
   "signingStatus": "unsigned",
   "approved": true,
-  "message": "SIFT V0 Beta for Windows x64 is available as one complete installer.",
-  "lastReviewed": "2026-10-17",
+  "message": "Public beta 0.3.3 is available for Windows x64. The newer 0.4.3 build is local only.",
+  "lastReviewed": "2026-10-23",
   "candidate": {
-    "version": "0.3.3",
+    "version": "0.4.3",
     "platform": "Windows",
     "architecture": "x64",
-    "installerFilename": "SIFT Setup 0.3.3.exe",
-    "sizeBytes": 144500817,
-    "sha256": "6938ceca184997c5d4772531012d5cab09368e4d43ff5c77e77a6ee7b6ca9fc5",
-    "builtAt": "2026-10-17",
+    "installerFilename": "SIFT Setup 0.4.3.exe",
+    "sizeBytes": 144521026,
+    "sha256": "90185155d4c0d7fd9b9e8c6d8b81c40f6a8513500987e1c736d05dd62056f9c8",
+    "builtAt": "2026-10-23T00:27:22+05:30",
     "signingStatus": "unsigned",
     "approved": false,
-    "reason": "Complete local 0.3.3 installer; public availability awaits verified GitHub Release upload."
+    "reason": "Latest complete local build. No hosted 0.4.3 installer is configured. Experimental study explanations are off by default; installed-upgrade acceptance and publisher signing remain pending."
   }
 }
